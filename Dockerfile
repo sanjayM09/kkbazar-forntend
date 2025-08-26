@@ -37,8 +37,8 @@ WORKDIR /app
 # Copy only package files first
 COPY package*.json ./
 
-# Clean install ensures fresh Linux binaries
-RUN npm ci
+# Install dependencies (ignore peer deps conflicts)
+RUN npm ci --legacy-peer-deps
 
 # Copy the rest of the source
 COPY . .
@@ -55,6 +55,7 @@ FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=build /app/dist .
-EXPOSE 3000
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
+
 
